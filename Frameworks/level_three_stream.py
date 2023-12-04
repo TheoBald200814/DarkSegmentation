@@ -11,7 +11,7 @@ import Tools.upsample
 
 
 class LevelThreeStream(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels=3, out_channels=3):
         super(LevelThreeStream, self).__init__()
 
         self.dscdb1 = dscdb.DSCDB(in_channels, out_channels)
@@ -20,9 +20,9 @@ class LevelThreeStream(nn.Module):
         self.dscdb4 = dscdb.DSCDB(in_channels, out_channels)
         self.sequential = nn.Sequential(
             nn.MaxPool2d(2),
-            nn.Conv2d(in_channels, out_channels, 3),
+            nn.Conv2d(3, 3, 3),
             nn.LeakyReLU(),
-            nn.InstanceNorm2d(out_channels)
+            nn.InstanceNorm2d(3)
         )
 
     def forward(self, x):
