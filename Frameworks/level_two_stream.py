@@ -40,8 +40,6 @@ class LevelTwoStream(nn.Module):
         result = t_c.tensor_concate(x, level_three_stream_result)
         result = upsample.upsample(result, 2)
 
-        temp_and_test_layer = nn.Conv2d(9, 3, 1)
-        result = temp_and_test_layer(result)
         return result
 
 
