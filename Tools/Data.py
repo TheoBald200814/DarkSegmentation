@@ -1,6 +1,11 @@
 import os
 from torchvision import transforms
 from PIL import Image
+"""
+    @description: 图像数据加载类，专门用于加载图像增强模型需要使用的数据集和标签集。
+    @author: ZhouRenjie
+    @Date: 2023/12/03
+"""
 
 
 class MyData():
