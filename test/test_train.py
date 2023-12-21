@@ -2,6 +2,7 @@ from torch import nn, optim
 import Frameworks.level_one_stream as model1
 import Tools.Data as dataloader
 import torch
+from loss import loss as custom_loss
 
 
 device = (
@@ -17,7 +18,11 @@ print(f"Using {device} device")
 model = model1.LevelOneStream(3, 3, 6, 6).to(device)
 
 print(model)
-loss = nn.MSELoss()
+
+# 自定义损失函数
+loss = custom_loss.MyLoss('6', 0.75, 0.05)
+
+# 数据集加载
 datasets = dataloader.MyData('/Users/theobald/Documents/code_lib/python_lib/DarkSegmentation/LOLdataset/our485/low',
                              '/Users/theobald/Documents/code_lib/python_lib/DarkSegmentation/LOLdataset/our485/high')
 
@@ -39,7 +44,7 @@ for i in range(epoch):
         result_loss.backward()
         optimizer.step()
 
-torch.save(model.state_dict(), './checkpoints/model_4.pth')
+torch.save(model.state_dict(), './checkpoints/new_model.pth')
 
 
 
