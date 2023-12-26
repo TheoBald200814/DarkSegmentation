@@ -3,6 +3,7 @@ import Frameworks.level_one_stream as model1
 import Tools.Data as dataloader
 import torch
 from loss import loss as custom_loss
+from Tools import cuda_loader
 
 
 device = (
@@ -12,6 +13,7 @@ device = (
     if torch.backends.mps.is_available()
     else "cpu"
 )
+
 print(f"Using {device} device")
 # 设备选择，默认CPU
 
@@ -20,31 +22,41 @@ model = model1.LevelOneStream(3, 3, 6, 6).to(device)
 print(model)
 
 # 自定义损失函数
-loss = custom_loss.MyLoss('6', 0.75, 0.05)
+loss = custom_loss.MyLoss('1', 0.75, 0.05, device).to(device)
+# loss = nn.MSELoss()
 
 # 数据集加载
-datasets = dataloader.MyData('/Users/theobald/Documents/code_lib/python_lib/DarkSegmentation/LOLdataset/our485/low',
-                             '/Users/theobald/Documents/code_lib/python_lib/DarkSegmentation/LOLdataset/our485/high')
+datasets = dataloader.MyData('../LOLdataset/our485/low',
+                             '../LOLdataset/our485/high')
 
 
-epoch = 5
+epoch = 1
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 for i in range(epoch):
-    for j in range(datasets.size()):
+    for j in range(datasets.size() - 400):
         data = datasets.get_by_index(j)
-        y_hat = model(data[0])
+
+
+        input = data[0]
+        input = input.to(device)
+        y_hat = model(input)
+
         y = data[1]
+        y = y.to(device)
 
         y_hat = y_hat.unsqueeze(0)
         y_hat = torch.nn.functional.interpolate(y_hat, size=[400, 600], mode='bilinear', align_corners=False)
         y_hat = y_hat.squeeze(0)
+
 
         result_loss = loss(y_hat, y)
         print(result_loss)
         result_loss.backward()
         optimizer.step()
 
-torch.save(model.state_dict(), './checkpoints/new_model.pth')
+    # torch.save(model.state_dict(), f'../checkpoints/2023_12_22_{i}.pth')
+
+torch.save(model.state_dict(), '../checkpoints/2023_12_22_50.pth')
 
 
 
