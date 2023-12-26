@@ -5,7 +5,6 @@ import torchvision.transforms as transforms
 from PIL import Image
 
 
-
 # 加载VGG模型，并截取到目标层的特征
 class VGGFeatureExtractor(nn.Module):
     def __init__(self, target_layer):
